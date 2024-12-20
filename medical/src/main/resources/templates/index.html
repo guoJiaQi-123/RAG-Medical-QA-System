@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../resources/favicon.ico" th:href="@{/static/favicon.ico}"/>
+    <link rel="stylesheet" type="text/css" href="../static/css/index.css" th:href="@{/css/index.css}">
+    <title>医疗智能体</title>
+</head>
+<body>
+
+<!-- 头部用户信息 -->
+<div class="header">
+    <div class="user-info">
+        <img src="https://www.w3schools.com/w3images/avatar2.png" alt="User Avatar">
+        <span>用户名: 小王</span>
+    </div>
+</div>
+
+<!-- 侧边栏导航 -->
+<div class="sidebar">
+    <div class="tab active-tab" onclick="switchTab(0)">知识库上传</div>
+    <div class="tab" onclick="switchTab(1)">医疗智能</div>
+</div>
+
+<!-- 主内容区 -->
+<div class="main-content">
+    <div class="tab-content active-content" id="uploadTab">
+        <h2>文件上传</h2>
+        <div class="upload-container">
+            <input type="file" id="fileInput">
+            <button onclick="uploadFile()">上传文件</button>
+        </div>
+        <!-- 文件列表显示 -->
+        <div class="file-list">
+            <h2>已上传文件</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>文件名</th>
+                    <th>文件大小</th>
+                    <th>字符数量</th>
+                    <th>分段</th>
+                    <th>文件状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="fileListBody">
+                <!-- 动态填充文件列表 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-content" id="chatTab" style="width: 100%">
+        <h2>医疗智能体Agent</h2>
+        <p>医疗问答智能体是一种基于人工智能的系统，利用自然语言处理技术，能够理解和解答用
+            户的健康相关问题。通过接入医学知识库和专家系统，智能体可以提供准确的医学建议、疾
+            病解答和健康咨询服务，帮助用户快速获取相关医疗信息，提升用户的就医体验。</p>
+        <div class="chat-box" id="chatBox">
+
+        </div>
+
+        <div class="input-area">
+            <textarea id="userInput" rows="3" placeholder="请输入消息..."></textarea>
+            <button onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+</div>
+
+<!-- 版权信息 -->
+<div class="footer">
+    <p>RAG-Medical-QA-System</p>
+</div>
+
+<script>
+    // 切换标签
+    function switchTab(index) {
+        const tabs = document.querySelectorAll('.sidebar .tab');
+        const contents = document.querySelectorAll('.tab-content');
+
+        // 重置所有标签和内容
+        tabs.forEach(tab => tab.classList.remove('active-tab'));
+        contents.forEach(content => content.classList.remove('active-content'));
+
+        // 激活选中的标签和内容
+        tabs[index].classList.add('active-tab');
+        contents[index].classList.add('active-content');
+    }
+
+    // 文件上传模拟
+    function uploadFile() {
+        const formData = new FormData();
+        const fileInput = document.getElementById('fileInput');
+        const file = fileInput.files[0];
+
+        if (file) {
+            formData.append('file', file);
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => alert('文件上传成功'))
+                .catch(error => alert('文件上传失败'));
+        } else {
+            alert('请选择一个文件上传');
+        }
+    }
+
+    function displayMessage(message, isUser = true, id) {
+        const chatBox = document.getElementById('chatBox');
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+
+        // 用户消息
+        if (isUser) {
+            messageElement.classList.add('user-message');
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+        } else {
+            // GPT 消息
+            messageElement.classList.add('gpt-message', `gpt-message-${id}`);
+            messageElement.textContent = message;
+            // 查找并替换最新的 GPT 消息
+            const existingMessages = chatBox.getElementsByClassName('gpt-message-' + id);
+            if (existingMessages.length > 0) {
+                // 如果有旧的 GPT 消息，则移除旧的并替换
+                chatBox.removeChild(existingMessages[0]);
+            }
+            chatBox.appendChild(messageElement);
+        }
+
+        // 滚动到最新消息
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+
+    // 发送消息函数
+    function sendMessage() {
+        const userInput = document.getElementById('userInput');
+        const message = userInput.value.trim();
+        const id = Math.floor(10000 + Math.random() * 90000)
+        if (message) {
+            displayMessage(message, true, id); // 显示用户消息
+            userInput.value = ''; // 清空输入框
+
+            // 向后端发送GET请求，传递消息作为查询参数
+            fetch(`/chat?message=${encodeURIComponent(message)}`, {
+                method: 'GET',
+            }).then(response => {
+                // 确保响应成功且返回流
+                if (response.ok && response.body) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    let messageBuffer = '';
+
+                    // 读取流的每一块
+                    function readStream() {
+                        reader.read().then(({value, done}) => {
+                            if (done) {
+                                // 流结束时，将整个消息显示
+                                displayMessage(messageBuffer, false, id);
+                            } else {
+                                // 拼接接收到的流数据
+                                messageBuffer += decoder.decode(value, {stream: true});
+                                // 实时更新显示
+                                displayMessage(messageBuffer, false, id);
+                                // 继续读取下一个数据块
+                                readStream();
+                            }
+                        });
+                    }
+
+                    // 开始读取流
+                    readStream();
+                }
+            })
+                .catch(error => {
+                    console.error('发送消息失败:', error);
+                    displayMessage('发送消息失败，请稍后再试。', false);
+                });
+        }
+    }
+
+
+    // 获取知识体列表信息
+    function loadFilelist() {
+        // 向后端发送get请求，获取文件列表
+        fetch('/getList')
+            .then(response => response.json()) // 解析返回的json数据
+            .then(data => {
+                // fileListBody  获取表格tbody部分
+                const filelistBody = document.getElementById('fileListBody')
+                // 使用map生成HTML表格行，并通过join拼接成一个完整的字符串
+                filelistBody.innerHTML = data.map(file =>
+                    `
+                <td>${file.fileName}</td>
+                <td>${file.fileSize}</td>
+                <td>${file.charCount}</td>
+                <td>${file.segments}</td>
+                <td>${file.status}</td>
+                <td><button>删除</button></td>
+                `).join('')// 合并所有行放到表格中
+            })
+            .catch(error => console.log("获取文件列表出错了。。。"))
+    }
+
+    //  页面加载就调用
+    window.onload = loadFilelist()
+</script>
+
+</body>
+</html>

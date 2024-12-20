@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tyut.mapper.FileInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.tyut.domain.FileInfo">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="fileSize" column="file_size" jdbcType="BIGINT"/>
+            <result property="charCount" column="char_count" jdbcType="INTEGER"/>
+            <result property="segments" column="segments" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="uploadTime" column="upload_time" jdbcType="TIMESTAMP"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_name,file_size,
+        char_count,segments,status,
+        upload_time,file_path
+    </sql>
+</mapper>

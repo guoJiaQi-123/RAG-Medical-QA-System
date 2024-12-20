@@ -1,0 +1,192 @@
+/* 页面整体样式 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f4f4f9;
+}
+
+/* 头部用户信息栏样式 */
+.header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px;
+    background-color: #333;
+    color: white;
+    position: relative;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.user-info span {
+    font-size: 16px;
+}
+
+/* 侧边栏样式 */
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: white;
+    padding-top: 20px;
+    position: fixed;
+    height: 100%;
+    left: 0;
+    top: 0;
+    border-radius: 10px 0 0 10px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar .tab {
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #444;
+    margin: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .tab:hover {
+    background-color: #555;
+}
+
+.sidebar .active-tab {
+    background-color: #4CAF50;
+    font-weight: bold;
+}
+
+/* 主容器 */
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1000px;
+    flex-grow: 1;
+}
+
+/* 标签内容区样式 */
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.active-content {
+    display: block;
+}
+
+/* 文件上传页面样式 */
+.upload-container {
+    text-align: center;
+}
+
+/* ChatGPT 对话页面样式 */
+.chat-box {
+    height: 400px;
+    margin-top: 20px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.message {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: #d1f7c4;
+    margin-left: auto;
+    text-align: right;
+}
+
+.gpt-message {
+    background-color: #e9ecef;
+    margin-right: auto;
+    text-align: left;
+}
+
+.input-area {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.input-area textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: none;
+}
+
+.input-area button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.input-area button:hover {
+    background-color: #45a049;
+}
+
+/* 版权信息样式 */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+.file-list {
+    margin-top: 30px;
+}
+.file-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+.file-list th, .file-list td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+.file-list th {
+    background-color: #f2f2f2;
+}
+.file-list td button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+.file-list td button:hover {
+    background-color: #e53935;
+}

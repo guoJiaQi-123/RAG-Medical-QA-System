@@ -1,0 +1,31 @@
+logging:
+  pattern:
+    console: logging.pattern.console=%d{MM/dd HH:mm:ss.SSS} %clr(%-5level) ---  [%-15thread] %cyan(%-50logger{50}):%msg%n
+  level:
+    dev:
+      langchain4j: debug
+      ai4j:
+        openai4j: debug
+spring:
+  thymeleaf:
+    cache: false  #关闭模板缓存，方便测试
+    suffix: .html
+    prefix: classpath:/templates/
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/medical?characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false
+
+file:
+  path: F:\GitHub代码仓库\RAG-Medical-QA-System\filedata\
+
+apiKey:
+  qwen: sk-2013c20522404d77ad7492cf3a48c5b1
+  Zhipu: f6debc524d70c1c245b6e931c5a6b394.3OeExMPIXSW8YOCq
+  Jina: jina_7c1575634738482dba5e516167f72a75MvfvE4ChaC7ehxxvzI9EOF02ygjw
+  Tavily: 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
